@@ -1,5 +1,5 @@
-# [Your Full Name]
-[Phone Number] | [Email Address] | [LinkedIn Profile] | [Location]
+# [DONG HYUN RHEE]
+ [dhrhee96@gmail.com]
 
 ---
 
@@ -9,13 +9,16 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🎓 EDUCATION
-**University of Manchester** *Integrated Bachelor & Master of Mathematics* | Sept 2018 – [Graduation Date]
+**University of Manchester** *Integrated Bachelor & Master of Mathematics* | Sept 2017 – [July 2021]
 * **Specialization:** Applied Mathematics (Numerical Analysis, Fluid Mechanics, Partial Differential Equations).
 * **Key Skills:** Computational modeling and complex problem-solving.
 
 ---
 
 ## 💼 PROFESSIONAL EXPERIENCE
+<<<<<<< HEAD
+=======
+
 
 **PASS (Peer Assisted Study Sessions)** *Student Mentor / Volunteer* | Sept 2018 – June 2019
 * Mentored first-year university students in foundational mathematics.
@@ -34,7 +37,7 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🛠 TECHNICAL SKILLS
-* **Programming:** Python (Data Analysis & Optimization), LaTeX.
+* **Programming:** Python (Data Analysis & Optimization),LaTeX,R,MATLAB.
 * **Mathematics:** Numerical Analysis, Fluid Dynamics, Differential Equations.
 * **Tools:** Microsoft Excel (Advanced), Project Coordination, Venue Management.
 
