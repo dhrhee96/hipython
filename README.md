@@ -16,10 +16,6 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 💼 PROFESSIONAL EXPERIENCE
-**Gichang Logistics** *Operations Assistant* | Jan 2023 – Mar 2023
-* Assisted the Director with dispatch operations and vehicle inspections.
-* Provided consignment support and optimized workflow procedures.
-* **Key Achievement:** Developed a Python-based sorting program that improved logistics bottleneck efficiency by **6%**.
 
 **PASS (Peer Assisted Study Sessions)** *Student Mentor / Volunteer* | Sept 2018 – June 2019
 * Mentored first-year university students in foundational mathematics.
