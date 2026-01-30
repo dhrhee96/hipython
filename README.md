@@ -1,5 +1,5 @@
 # [DONG HYUN RHEE]
-[Phone Number] | [dhrhee96@gmail.com] | [LinkedIn Profile] | [Location]
+ [dhrhee96@gmail.com] | [Seoul,KR]
 
 ---
 
@@ -9,7 +9,7 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🎓 EDUCATION
-**University of Manchester** *Integrated Bachelor & Master of Mathematics* | Sept 2017 – [July 2021]
+**University of Manchester** *Integrated Bachelor & Master of Mathematics* | Sept 2017 – July 2021
 * **Specialization:** Applied Mathematics (Numerical Analysis, Fluid Mechanics, Partial Differential Equations).
 * **Key Skills:** Computational modeling and complex problem-solving.
 
@@ -24,7 +24,7 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🏆 CERTIFICATIONS & TRAINING
-**KPMG Future Academy** *Professional Development Coursework* | 2026
+**KPMG Future Academy** *Professional Development Coursework* | 2025.12-
 * Completed intensive training focused on [Insert Specific Skill, e.g., Digital Transformation/AI].
 * Developed business-ready solutions using professional frameworks.
 
