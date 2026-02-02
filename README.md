@@ -1,5 +1,9 @@
 # [DONG HYUN RHEE]
+<<<<<<< HEAD
  [dhrhee96@gmail.com]
+=======
+ [dhrhee96@gmail.com] | [Seoul,KR]
+>>>>>>> 2bc1494944faf6d9d2714afe0f836c6e0462428b
 
 ---
 
@@ -9,7 +13,11 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🎓 EDUCATION
+<<<<<<< HEAD
 **University of Manchester** *Integrated Bachelor & Master of Mathematics* | Sept 2017 – [July 2021]
+=======
+**University of Manchester** *Integrated Bachelor & Master of Mathematics* | Sept 2017 – July 2021
+>>>>>>> 2bc1494944faf6d9d2714afe0f836c6e0462428b
 * **Specialization:** Applied Mathematics (Numerical Analysis, Fluid Mechanics, Partial Differential Equations).
 * **Key Skills:** Computational modeling and complex problem-solving.
 
@@ -17,8 +25,11 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 
 ## 💼 PROFESSIONAL EXPERIENCE
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
+=======
+>>>>>>> 2bc1494944faf6d9d2714afe0f836c6e0462428b
 
 **PASS (Peer Assisted Study Sessions)** *Student Mentor / Volunteer* | Sept 2018 – June 2019
 * Mentored first-year university students in foundational mathematics.
@@ -27,7 +38,7 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🏆 CERTIFICATIONS & TRAINING
-**KPMG Future Academy** *Professional Development Coursework* | 2026
+**KPMG Future Academy** *Professional Development Coursework* | 2025.12-
 * Completed intensive training focused on [Insert Specific Skill, e.g., Digital Transformation/AI].
 * Developed business-ready solutions using professional frameworks.
 
@@ -37,7 +48,11 @@ Analytical Mathematics graduate from the **University of Manchester** with a spe
 ---
 
 ## 🛠 TECHNICAL SKILLS
+<<<<<<< HEAD
 * **Programming:** Python (Data Analysis & Optimization),LaTeX,R,MATLAB.
+=======
+* **Programming:** Python (Data Analysis & Optimization), LaTeX , R.
+>>>>>>> 2bc1494944faf6d9d2714afe0f836c6e0462428b
 * **Mathematics:** Numerical Analysis, Fluid Dynamics, Differential Equations.
 * **Tools:** Microsoft Excel (Advanced), Project Coordination, Venue Management.
 
