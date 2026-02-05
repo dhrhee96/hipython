@@ -48,3 +48,5 @@ media/
 esg_data_test.json
 >>>>>>> efe586ef46ccbebb9e9adbc3c4a08c9282338a5c
 .env
+#data
+data/
