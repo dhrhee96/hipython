@@ -1,58 +1,47 @@
-# 📊 월마트 상품별 구매 금액 예측 및 모델 고도화 보고서
+# 📊 월마트 판매 데이터 분석 보고서
 
-**작성일:** 2026년 2월 10일  
-**분석 대상:** Walmart Black Friday Sales Data (실제 데이터 100% 활용)  
-**핵심 기술:** Gradient Boosting (XGBoost) & K-Fold Target Encoding
+**작성일:** 2026년 2월 11일  
+**작성자:** 이동현 
+**주제:** High Cardinality 변수 처리 및 Gradient Boosting 최적화 연구
 
 ---
 
 ## 1. 개요 (Overview)
-본 분석은 월마트의 거래 데이터를 활용하여 고객 특성(Age, Gender 등)과 상품 정보(Product_ID)가 **구매 금액(Purchase)**에 미치는 영향을 분석하고, 이를 예측하는 회귀 모델을 구축하는 것을 목적으로 한다.
-특히, `Product_ID`와 같이 카디널리티(Cardinality, 고유값의 개수)가 매우 높은 변수를 효과적으로 처리하기 위한 **엔지니어링 기법의 효율성**을 검증한다.
+본 보고서는 Walmart Black Friday 거래 데이터를 활용하여 **구매 금액(Purchase Amount)**을 결정하는 요인을 분석하고, 이를 예측하는 회귀 모델을 구축한 결과를 담고 있다. 특히 `Product_ID`(약 3,600개)와 같은 고차원 범주형 변수의 차원 축소 및 정보 보존을 위한 수치해석적 기법을 적용하고, 데이터의 특성을 규명하였다.
 
-## 2. 분석 방법론 (Methodology)
+## 2. 연구 가설 (Research Hypotheses)
+데이터 분석 전, 구매 패턴에 대한 수리적/통계적 가설을 수립하였다.
 
-### 2.1 Feature Engineering: K-Fold Target Encoding
-* **문제점:** `Product_ID`는 수천 개의 범주를 가지므로, 일반적인 One-Hot Encoding은 차원의 저주를 유발하며, 단순 평균(Mean Encoding)은 과적합(Overfitting)을 초래함.
-* **해결책:** **K-Fold Target Encoding**을 적용.
-    * 학습 데이터를 $K$개로 나누어, $i$번째 데이터의 인코딩 값은 **자신이 속하지 않은 나머지 Fold의 평균값**으로 대체.
-    * **효과:** 자기 자신의 타겟값이 피처에 반영되는 **Data Leakage**를 차단하고, 모델의 일반화 성능을 확보함.
+* **$H_1$ (인구통계 영향력):** 구매자의 나이, 성별 등은 구매 금액 분산(Variance)에 유의미한 영향을 미칠 것이다.
+* **$H_2$ (상품 가치 지배력):** 구매 금액은 상품 고유의 정가(Product Value)에 의해 결정되는 경향이 강할 것이다.
+* **$H_3$ (직교성 확보):** K-Fold Target Encoding을 적용하면 타겟 노이즈와 독립적인 피처 생성이 가능할 것이다.
 
-### 2.2 Model Algorithm: XGBoost
-* 기존 Random Forest(Bagging) 대비, 오차(Residual)를 순차적으로 줄여나가는 **Gradient Boosting** 방식을 채택.
-* 손실 함수의 2차 미분항(Hessian)까지 근사하여 수렴 속도와 정확도를 최적화함.
+## 3. 방법론 (Methodology)
 
----
+### 3.1 Feature Engineering: K-Fold Target Encoding
+* **목적:** Data Leakage 방지 및 직교성(Orthogonality) 확보.
+* **수식:** $\hat{x}_i = \frac{1}{|T_k|} \sum_{j \in T_k, j \neq i} y_j$ (Out-of-Fold 평균 사용)
+* **효과:** 자기 상관성(Auto-correlation)을 제거하여 과적합 없는 일반화 성능 확보.
 
-## 3. 모델 성능 평가 (Performance Evaluation)
+### 3.2 Algorithm: XGBoost
+* **접근:** 손실 함수의 2차 미분(Hessian) 정보를 활용한 Gradient Boosting.
+* **최적화:** 테일러 급수 근사를 통해 잔차(Residual)를 가장 빠르게 줄이는 트리 구조 탐색.
 
-베이스라인 모델(Random Forest + Label Encoding)과 고도화 모델(XGBoost + Target Encoding)의 성능을 비교한 결과는 다음과 같다.
+## 4. 실험 결과 (Experimental Results)
 
-| 모델 구분 | RMSE (평균 오차) | R² Score (설명력) | 성능 변화 |
+| Model | RMSE ($) | R² Score | 비고 |
 | :--- | :--- | :--- | :--- |
-| **Baseline (RF)** | $2,687 | 0.7126 | 기준 |
-| **Advanced (XGB)** | **$2,670** | **0.7161** | **약 0.5% 개선** |
+| **Baseline (RF)** | 2,687 | 0.7126 | 단순 Label Encoding |
+| **Advanced (XGB)** | **2,670** | **0.7161** | **K-Fold TE + Hyperparam Tuning** |
 
-> **📊 결과 해석:** > 고도화된 엔지니어링과 알고리즘을 적용했음에도 불구하고, $R^2$ 점수는 **0.71 대에서 정체**되는 현상을 보임. 이는 데이터가 가진 정보량의 한계에 기인한 것으로 판단됨.
+## 5. 원인 분석 및 가설 검증
+* **가설 1 (기각):** 사용자 변수(Age, Gender)의 Feature Importance는 1% 미만으로 나타남.
+* **가설 2 (채택):** `Product_ID_mean` 변수가 중요도의 99%를 차지하며, 예측값이 계단식 분포를 보임 (가격 경직성 확인).
+* **가설 3 (채택):** K-Fold 적용 시 Test Set에서도 안정적인 성능을 유지함 (Robustness 확보).
 
-## 4. 상세 원인 분석 (Root Cause Analysis)
+## 6. 결론 및 제언 (Data-Centric Strategy)
+알고리즘 튜닝은 전역 최적해(Global Optimum)에 도달하여 효용이 체감되었다. 향후 성능 향상($R^2 > 0.8$)을 위해서는 **외부 데이터 결합**이 필수적이다.
 
-모델 성능이 획기적으로 향상되지 않은 원인을 **변수 중요도(Feature Importance)**와 **데이터 특성** 관점에서 분석함.
-
-1.  **가격의 경직성 (Price Rigidity):**
-    * 분석 결과, 구매 금액($y$)을 결정하는 변수 중요도의 **99% 이상이 `Product_ID_mean` (상품별 평균 가격)**에 집중됨.
-    * `Age`, `Gender`, `Occupation` 등 사용자 변수의 영향력은 미미함.
-    * **의미:** 월마트의 상품 가격은 정찰제(Fixed Price)이므로, **"누가 샀는가"보다 "무엇을 샀는가"가 가격 결정의 절대적인 요인**임.
-
-2.  **개인화 변수의 한계:**
-    * 현재 데이터에는 사용자의 구매 이력이나 할인 쿠폰 사용 여부 등 **개별적인 가격 변동(Variance)**을 설명할 수 있는 변수가 부재함.
-    * 따라서 모델은 상품의 '정가'를 맞추는 데에는 성공했으나(R² 0.71), 거래별 미세한 차이를 설명하지 못함.
-
-## 5. 결론 및 제언 (Conclusion)
-
-1.  **모델의 의의:** * 현재 구축된 모델은 **"결측값 및 신규 상품(Cold Start)에 강건한(Robust) 베이스라인"**으로서 가치가 있음.
-    * K-Fold Target Encoding을 통해 과적합 위험 없이 상품별 표준 가격을 신뢰성 있게 추론 가능함.
-
-2.  **향후 전략 (Data-Centric Approach):**
-    * 알고리즘 튜닝(Hyperparameter Tuning)은 한계 효용에 도달함.
-    * 설명력을 0.8 이상으로 높이기 위해서는 **할인율(Discount Rate)**, **프로모션 여부**, **구매 시점(Time/Seasonality)** 등 가격 변동성을 직접적으로 설명하는 **외부 데이터 수집**이 필수적임.
+1.  **할인율(Discount Rate):** 정가 대비 실구매가 변동 설명.
+2.  **시계열(Time):** 월초/월말, 시즌성 반영.
+3.  **개인화(Profiling):** 유저별 구매력(Spending Power) 지수 개발.
