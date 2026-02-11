@@ -45,3 +45,5 @@
 1.  **할인율(Discount Rate):** 정가 대비 실구매가 변동 설명.
 2.  **시계열(Time):** 월초/월말, 시즌성 반영.
 3.  **개인화(Profiling):** 유저별 구매력(Spending Power) 지수 개발.
+
+데이터출처: Kaggle Walmart Dataset
