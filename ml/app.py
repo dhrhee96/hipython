@@ -4,6 +4,8 @@ import numpy as np
 import joblib
 import os
 from PIL import Image
+import plotly.graph_objects as go
+import plotly.express as px
 
 # ==========================================
 # 페이지 설정 및 모델 로드
@@ -16,7 +18,6 @@ def load_model():
         st.error("모델 파일을 찾을 수 없습니다") 
         st.stop()
     
-    # 변경점 1: 딕셔너리 형태로 저장된 모델과 피처 리스트를 각각 불러옵니다.
     model_data = joblib.load('credit_pipeline.pkl')
     return model_data['pipeline'], model_data['features']
 
@@ -27,13 +28,13 @@ pipeline, expected_features = load_model()
 # ==========================================
 def get_risk_grade(probability: float):
     if probability < 0.25:
-        return "안전", "st.success", "현재 연체 위험이 매우 낮습니다. 통상적인 관리를 유지하세요."
+        return "안전", "st.success", "현재 연체 위험이 매우 낮습니다. 통상적인 관리를 유지하세요.", "green"
     elif probability < 0.50:
-        return "주의", "st.info", "잠재적 연체 징후가 있습니다. 최근 결제 이력을 모니터링하세요."
+        return "주의", "st.info", "잠재적 연체 징후가 있습니다. 최근 결제 이력을 모니터링하세요.", "gold"
     elif probability < 0.75:
-        return "경고", "st.warning", "연체 위험이 높습니다. 한도 하향 조정이나 선제적 안내 연락을 권장합니다."
+        return "경고", "st.warning", "연체 위험이 높습니다. 한도 하향 조정이나 선제적 안내 연락을 권장합니다.", "orange"
     else:
-        return "위험", "st.error", "즉각적인 연체 발생 가능성이 매우 높습니다. 신규 대출 및 한도 상향을 즉시 차단하세요."
+        return "위험", "st.error", "즉각적인 연체 발생 가능성이 매우 높습니다. 신규 대출 및 한도 상향을 즉시 차단하세요.", "red"
 
 # ==========================================
 # 사이드바 (메뉴 네비게이션)
@@ -73,7 +74,6 @@ if menu == "💳 연체 예측 (심사역용)":
                 edu_sel = st.selectbox("학력 (EDUCATION)", options=list(edu_map.keys()), index=1)
                 input_data['EDUCATION'] = edu_map[edu_sel]
             with col3:
-                # 앞서 논의한 대로 기혼/미혼 2지선다로 통합 적용
                 mar_map = {"기혼 (1)": 1, "미혼 (이혼/사별 포함) (2)": 2}
                 mar_sel = st.selectbox("결혼여부 (MARRIAGE)", options=list(mar_map.keys()), index=0)
                 input_data['MARRIAGE'] = mar_map[mar_sel]
@@ -107,56 +107,102 @@ if menu == "💳 연체 예측 (심사역용)":
             st.stop()
             
         try:
-            # 기본 입력 데이터를 DataFrame으로 변환
             df_input = pd.DataFrame([input_data])
             
-            # 변경점 2: 실시간 피처 엔지니어링 (train.py에서 추가한 파생 변수 계산)
             bill_cols = ['BILL_AMT1', 'BILL_AMT2', 'BILL_AMT3', 'BILL_AMT4', 'BILL_AMT5', 'BILL_AMT6']
             avg_bill = df_input[bill_cols].mean(axis=1)
             
-            # 한도 대비 사용률 (0으로 나누기 방지)
             df_input['AVG_UTIL_RATE'] = (avg_bill / df_input['LIMIT_BAL']).replace([np.inf, -np.inf], 0)
             
-            # 최근 납부 유연성 (0으로 나누기 방지 및 0~1 사이 클리핑)
             bill1_safe = df_input['BILL_AMT1'].replace(0, 1)
             df_input['PAY_RATIO_1'] = (df_input['PAY_AMT1'] / bill1_safe).clip(0, 1)
             
-            # 변경점 3: 모델이 학습할 때 사용한 '정확한 변수 순서'대로 컬럼 재배치
             df_final = df_input[expected_features]
-            
-            # 예측 수행
             prob = pipeline.predict_proba(df_final)[0][1]
             
             if not (0.0 <= prob <= 1.0):
                 st.error("예측에 실패했습니다. 입력값을 확인해주세요")
                 st.stop()
                 
-            grade, ui_color, recommendation = get_risk_grade(prob)
+            grade, ui_color, recommendation, gauge_color = get_risk_grade(prob)
             
             st.divider()
-            st.subheader("📊 예측 결과")
+            st.subheader("📊 예측 결과 및 심사 리포트")
             
-            res_col1, res_col2 = st.columns([1, 2])
+            # 레이아웃을 3개의 컬럼으로 분리 (게이지 차트, 권장 조치, 결제 흐름 차트)
+            res_col1, res_col2 = st.columns([1, 1.2])
             
             with res_col1:
-                st.metric(label="예상 연체 확률", value=f"{prob * 100:.1f}%")
-                if ui_color == "st.success":
-                    st.success(f"위험 등급: {grade}")
-                elif ui_color == "st.info":
-                    st.info(f"위험 등급: {grade}")
-                elif ui_color == "st.warning":
-                    st.warning(f"위험 등급: {grade}")
-                else:
-                    st.error(f"위험 등급: {grade}")
-                    
-            with res_col2:
-                st.markdown("**💡 권장 심사 조치**")
-                st.info(recommendation)
+                # 1. 확률 게이지 차트 (Plotly)
+                fig_gauge = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = prob * 100,
+                    number = {'suffix': "%", 'valueformat': ".1f"},
+                    title = {'text': f"<b>연체 확률 ({grade})</b>", 'font': {'size': 20}},
+                    gauge = {
+                        'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "darkblue"},
+                        'bar': {'color': "rgba(0,0,0,0)"}, # 기본 바 숨김
+                        'bgcolor': "white",
+                        'borderwidth': 2,
+                        'bordercolor': "gray",
+                        'steps': [
+                            {'range': [0, 25], 'color': "rgba(144, 238, 144, 0.6)"}, # 안전
+                            {'range': [25, 50], 'color': "rgba(255, 215, 0, 0.6)"},   # 주의
+                            {'range': [50, 75], 'color': "rgba(255, 165, 0, 0.6)"},   # 경고
+                            {'range': [75, 100], 'color': "rgba(255, 99, 71, 0.6)"}], # 위험
+                        'threshold': {
+                            'line': {'color': gauge_color, 'width': 6},
+                            'thickness': 0.8,
+                            'value': prob * 100
+                        }
+                    }
+                ))
+                fig_gauge.update_layout(height=280, margin=dict(l=20, r=20, t=40, b=20))
+                st.plotly_chart(fig_gauge, use_container_width=True)
                 
+            with res_col2:
+                # 권장 조치 및 요약 지표
+                st.markdown("**💡 권장 심사 조치**")
+                if ui_color == "st.success": st.success(recommendation)
+                elif ui_color == "st.info": st.info(recommendation)
+                elif ui_color == "st.warning": st.warning(recommendation)
+                else: st.error(recommendation)
+                
+                st.markdown("**핵심 리스크 지표**")
+                util_rate = df_input['AVG_UTIL_RATE'].values[0] * 100
+                st.metric(label="6개월 평균 한도 소진율", value=f"{util_rate:.1f}%", 
+                          delta="한도 초과 위험" if util_rate > 80 else "정상 범위", delta_color="inverse")
+            
             st.divider()
-            st.subheader("📋 입력된 고객 정보 요약 및 파생 지표")
-            # 심사역이 실시간으로 계산된 파생 지표도 함께 볼 수 있도록 출력
-            st.dataframe(df_final, use_container_width=True)
+            
+            # 2. 최근 6개월 청구 vs 납부 흐름 차트 (Plotly Bar/Line)
+            st.markdown("📈 **최근 6개월 청구 및 납부 흐름**")
+            
+            # 차트용 데이터프레임 구성 (과거->현재 순서로)
+            months = ['월-6', '월-5', '월-4', '월-3', '월-2', '월-1(최근)']
+            bill_amts = [input_data[f'BILL_AMT{i}'] for i in range(6, 0, -1)]
+            pay_amts = [input_data[f'PAY_AMT{i}'] for i in range(6, 0, -1)]
+            
+            trend_df = pd.DataFrame({
+                '월': months,
+                '청구액': bill_amts,
+                '납부액': pay_amts
+            })
+            
+            # Plotly Express를 이용한 이중 차트 (그룹 바 차트)
+            fig_trend = px.bar(trend_df, x='월', y=['청구액', '납부액'], barmode='group',
+                               color_discrete_map={'청구액': 'indianred', '납부액': 'royalblue'})
+            fig_trend.update_layout(
+                yaxis_title="금액 (원)",
+                xaxis_title="",
+                legend_title_text="구분",
+                height=350,
+                margin=dict(l=0, r=0, t=30, b=0)
+            )
+            st.plotly_chart(fig_trend, use_container_width=True)
+            
+            with st.expander("📋 전체 입력 데이터 및 파생 지표 확인"):
+                st.dataframe(df_final, use_container_width=True)
             
         except Exception as e:
             st.error(f"서비스 오류가 발생했습니다: {str(e)}")
@@ -167,7 +213,6 @@ if menu == "💳 연체 예측 (심사역용)":
 elif menu == "📊 모델 리포트 (관리자용)":
     st.title("📊 고성능 모델 성능 리포트")
     st.markdown("학습된 기계학습 파이프라인(`StandardScaler -> XGBoost`)의 평가 지표입니다.")
-    
     st.divider()
     
     col1, col2 = st.columns([1, 1])
@@ -190,13 +235,5 @@ elif menu == "📊 모델 리포트 (관리자용)":
             - **피처 엔지니어링**: 한도 대비 사용률(`AVG_UTIL_RATE`), 최근 납부 유연성(`PAY_RATIO_1`) 추가
             - **데이터 정제**: 혼동을 주던 결혼 여부(중혼/기타 등) 이진화 처리 완료
             - **클래스 불균형 해소**: 연체자 가중치(`scale_pos_weight`) 적용으로 민감도 향상
-            """
-        )
-        st.markdown(
-            """
-            **오차 행렬 보는 법:**
-            - **0 (정상)**: 고객이 연체하지 않은 경우
-            - **1 (연체)**: 고객이 연체한 경우
-            - 붉은색 계열이 진할수록 해당 영역의 데이터 건수가 많음을 의미합니다.
             """
         )
