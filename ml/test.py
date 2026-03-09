@@ -6,7 +6,7 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.metrics import classification_report, accuracy_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -107,3 +107,10 @@ def prepare_data_and_train():
 
 if __name__ == "__main__":
     prepare_data_and_train()
+# 1. 상세 레포트 출력 (Precision, Recall, F1 포함)
+report = classification_report(y_test, y_pred, target_names=['정상', '연체'])
+print(report)
+
+# 2. 정확도 출력
+acc = accuracy_score(y_test, y_pred)
+print(f"전체 정확도: {acc:.4f}")    
