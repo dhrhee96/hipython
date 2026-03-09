@@ -102,15 +102,11 @@ def prepare_data_and_train():
         'pipeline': best_model,
         'features': X.columns.tolist()
     }
+    y_pred = best_model.predict(X_test) 
+    report = classification_report(y_test, y_pred, target_names=['정상', '연체'])
+    logger.info("\n" + report) # 로그에 상세 지표 출력
     joblib.dump(model_data, 'credit_pipeline.pkl')
     logger.info("모델과 피처 명세가 'credit_pipeline.pkl'에 통합 저장되었습니다.")
-
+    
 if __name__ == "__main__":
     prepare_data_and_train()
-# 1. 상세 레포트 출력 (Precision, Recall, F1 포함)
-report = classification_report(y_test, y_pred, target_names=['정상', '연체'])
-print(report)
-
-# 2. 정확도 출력
-acc = accuracy_score(y_test, y_pred)
-print(f"전체 정확도: {acc:.4f}")    
