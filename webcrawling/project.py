@@ -108,7 +108,7 @@ def extract_card_candidates(page):
     return page.evaluate(js)
 
 def extract_detail_fields(detail_page):
-    js = """
+    js = """c
     () => {
       const bodyText = (document.body.innerText || '').replace(/\\s+/g, ' ').trim();
 
