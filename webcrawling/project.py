@@ -134,7 +134,7 @@ def extract_detail_fields(detail_page):
     """
     return detail_page.evaluate(js)
 
-def scrape(max_pages=2, headless=True, with_detail=True):
+def scrape(max_pages=50, headless=True, with_detail=True):
     rows = []
 
     with sync_playwright() as p:
