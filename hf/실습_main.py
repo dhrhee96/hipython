@@ -16,4 +16,4 @@ app.add_middleware(
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int):
-    return {"item_id": item_id, "name": "노예"}
+    return {"item_id": item_id, "name": "콤퓨타"}

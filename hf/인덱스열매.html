@@ -1,23 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
+
 <head>
-    <title>프론트엔드 페이지</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KR-FinBert 감성 분석기</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .neutral {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+
+        .positive {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .negative {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .loading {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>상품 정보</h1>
-    <button onclick="getItemInfo()">5번 상품 정보 가져오기</button>
-    <div id="item-info"></div>
+
+    <h2>금융 뉴스 감성 분석 (KR-FinBert)</h2>
+    <p>분석할 텍스트를 입력하세요:</p>
+
+    <textarea id="inputText" placeholder="예: 삼성전자의 1분기 영업이익이 예상치를 상회하며 긍정적인 실적을 발표했습니다."></textarea>
+    <button id="submitBtn" onclick="analyzeText()">분석하기</button>
+
+    <div id="loading" class="loading" style="display: none;">분석 중입니다...</div>
+
+    <div id="result">
+        <strong>결과:</strong> <span id="label"></span><br>
+        <strong>신뢰도:</strong> <span id="score"></span>%
+    </div>
 
     <script>
-        function getItemInfo() {
-            fetch('http://127.0.0.1:8000/items/5')
-                .then(response => response.json()) 
-                .then(data => { 
-                    // 화면에 데이터를 표시합니다.
-                    document.getElementById('item-info').innerText = 
-                        `상품명: ${data.name}, 상품ID: ${data.item_id}`;
-                })
+        async function analyzeText() {
+            const text = document.getElementById('inputText').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            const loading = document.getElementById('loading');
+
+            if (!text.trim()) {
+                alert("텍스트를 입력해주세요.");
+                return;
+            }
+
+            // UI 초기화
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            resultDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/sentiment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (!response.ok) throw new Error("서버 응답 오류");
+
+                const data = await response.json();
+
+                // 결과 표시
+                document.getElementById('label').innerText = data.label;
+                document.getElementById('score').innerText = (data.score * 100).toFixed(2);
+
+                // 라벨에 따른 스타일 변경
+                resultDiv.className = '';
+                if (data.label === 'positive') resultDiv.classList.add('positive');
+                else if (data.label === 'negative') resultDiv.classList.add('negative');
+                else resultDiv.classList.add('neutral');
+
+                resultDiv.style.display = 'block';
+
+            } catch (error) {
+                alert("에러가 발생했습니다: " + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
         }
     </script>
 </body>
+
 </html>
