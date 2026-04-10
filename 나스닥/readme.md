@@ -301,20 +301,10 @@ http://localhost:8501
 ---
 
 ## 📄 License
-
-이 프로젝트는 **MIT License**를 따릅니다.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🙌 Contact
 
 프로젝트에 관심이 있거나 협업을 원하신다면 Issues 또는 Pull Request로 언제든지 의견을 남겨 주세요.
-
-GitHub README를 더 강화하고 싶다면 아래도 추가 가능합니다.
-
-- 데모 GIF
-- 실제 결과 예시 이미지
-- 성능 실험 섹션
-- 수학 공식 섹션
-- 발표용 포트폴리오 링크
-
