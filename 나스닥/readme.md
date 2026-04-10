@@ -304,12 +304,6 @@ http://localhost:8501
 
 이 프로젝트는 **MIT License**를 따릅니다.
 
-```text
-MIT License
-```
-
-필요하다면 `LICENSE` 파일을 별도로 추가해 주세요.
-
 ---
 
 ## 🙌 Contact
