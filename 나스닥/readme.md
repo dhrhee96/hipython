@@ -211,7 +211,7 @@ cd quantamental-risk-dashboard
 ### 2. Install dependencies
 
 ```bash
-pip install streamlit matplotlib pandas numpy yfinance scipy python-dotenv openai langchain langchain-openai langchain-community duckduckgo-search
+pip install streamlit plotly pandas numpy yfinance scipy python-dotenv openai langchain langchain-openai langchain-community duckduckgo-search requests streamlit-searchbox
 ```
 
 또는 `requirements.txt`가 있다면:
