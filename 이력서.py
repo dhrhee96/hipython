@@ -150,7 +150,7 @@ html_content = """
     <div class="section-content">
         <div class="item">
             <div class="item-title">
-                <span>데이터 기반 예측 모델 구축 프로젝트 (Python)</span>
+                <span>데이터 기반 중고차 가격예측 모델 구축 프로젝트 (Python)</span>
                 <span class="item-date">2026.03</span>
             </div>
             <div class="item-desc">
@@ -175,7 +175,43 @@ html_content = """
             </div>
         </div>
     </div>
-
+    <h2>게임 경험 (Gaming Experience)</h2>
+    <div class="section-content">
+        <div class="item">
+            <div class="item-title">
+                <span>트릭컬 Re:vive  </span>
+                <span class="item-date">2023.09 – 현재</span>
+            </div>
+            <div class="item-desc">
+                <ul>
+                    <li>유저 친화적 운영 정책에 대한 높은 이해도, 특히 게임 내부 사고가 터졌을때 빠른 피드백으로 유저들의 불만을 줄임 </li>
+                    <li>캐릭터 특히 이드나 죠안같은 엘다인 캐릭터 확률이,타 3성캐릭터들에 비해서 압도적으로 낮은것을 경험</li>
+                </ul>
+            </div>
+            <div class="item-title">
+                <span>던전앤파이터  </span>
+                <span class="item-date">2020.09 – 현재</span>
+            </div>
+            <div class="item-desc">
+                <ul>
+                    <li>현행 엔드 컨텐츠 다수 클리어 경험(바칼,안개신,나벨,이내 황혼전,디레지에)</li>
+                    <li>딜 인플레이션을 일으키는 상품을 함부로 출시하면 안된다는것을 경험</li>
+                    <li>현행 디렉터의 소통을 방식을 통해,일방적인 통보를 하면 유저들의 불만이 증가한다는 것을 경험</li>
+                </ul>
+            </div>
+             <div class="item-title">
+                <span>림버스 컴퍼니 </span>
+                <span class="item-date">2020.09 – 현재</span>
+            </div>
+            <div class="item-desc">
+                <ul>
+                    <li>현행 엔드 컨텐츠 다수 클리어 경험(바칼,안개신,나벨,이내 황혼전,디레지에)</li>
+                    <li>딜 인플레이션을 일으키는 상품을 함부로 출시하면 안된다는것을 경험</li>
+                    <li>현행 디렉터의 소통을 방식을 통해,일방적인 통보를 하면 유저들의 불만이 증가한다는 것을 경험</li>
+                </ul>
+            </div>
+         </div>
+    </div>
     <h2>추가 정보 (Additional Information)</h2>
     <div class="section-content">
         <ul>
@@ -183,7 +219,7 @@ html_content = """
             <li><strong>강점:</strong> 4L(Liked, Learned, Lacked, Longed for) 회고법을 통한 자기 객관화 및 지속적 성장</li>
         </ul>
     </div>
-</body>
+    </body>
 </html>
 """
 
